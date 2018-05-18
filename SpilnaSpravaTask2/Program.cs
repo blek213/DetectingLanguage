@@ -32,6 +32,7 @@ namespace SpilnaSpravaTask2
             IdentitySentense(lines);
 
 
+
             Console.ReadKey();
         }
 

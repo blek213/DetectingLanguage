@@ -19,7 +19,6 @@ namespace SpilnaSpravaTask2
 
         static void Main(string[] args)
         {
-
             string[] files = Directory.GetFiles(setting);
 
             foreach (string s in files)
@@ -32,11 +31,10 @@ namespace SpilnaSpravaTask2
 
             IdentitySentense(lines);
 
+            //int countemail = CountEmails(lines);
+            ////////int countnumbers = CountNumbers(lines);
 
-
-            int countemail = CountEmails(lines);
-            int countnumbers = CountNumbers(lines);
-
+            //Console.WriteLine(countemail);
 
             Console.ReadKey();
         }
@@ -45,38 +43,16 @@ namespace SpilnaSpravaTask2
         {
             int words = 0;
 
-            for(int i = 0; i < sentense.Length; i++)
+            for (int i = 0; i < sentense.Length; i++)
             {
 
             }
-
-            var text = sentense;
-
-            int wordCount = 0, index = 0;
-
-            while (index < text.Length)
-            {
-                // check if current char is part of a word
-                while (index < text.Length && !char.IsWhiteSpace(text[index]))
-                    index++;
-
-                wordCount++;
-
-                // skip whitespace until next word
-                while (index < text.Length && char.IsWhiteSpace(text[index]))
-                    index++;
-
-            }
-
-            Console.WriteLine(wordCount);
 
             //string[] textMass;
 
             //textMass = sentense.Split(' ');
             //Console.WriteLine("Количество слов:");
             //Console.WriteLine(textMass.Length);
-
-
 
             return words;
         }
@@ -94,8 +70,50 @@ namespace SpilnaSpravaTask2
             Regex rx = new Regex(MatchEmailPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
             MatchCollection matches = rx.Matches(sentense);
-
+          
             EmailCount = matches.Count;
+
+            foreach (Match match in matches)
+            {
+               // Console.WriteLine(match.Value.ToString());
+
+                String value = sentense;
+
+                string val = match.Value;
+
+                int valLength = val.Length;
+
+                int StartIndex = value.IndexOf(val); //10
+                int EndIndex = StartIndex + valLength; //15
+
+                object[] array = new object[value.Length];
+
+                //Convert string to object[]
+                for (var i = 0; i < array.Length; i++)
+                {
+                    array[i] = value[i];
+                }
+
+                //Truncate needed element
+                for (var i = StartIndex; i < EndIndex; i++)
+                {
+                    array = array.Where(w => w != array[StartIndex]).ToArray();
+
+                }
+
+                string resultValue = "";
+
+                //Convert object[] to string
+                for (var i = 0; i < array.Length; i++)
+                {
+                    resultValue += array[i];
+                }
+
+                sentense = resultValue;
+
+                Console.WriteLine(sentense);
+
+            }
 
             return EmailCount;
         }
@@ -104,11 +122,12 @@ namespace SpilnaSpravaTask2
         {
             int NumbersCount = 0;
 
+            
+
             return NumbersCount;
         }
         public static void IdentitySentense(string lines)
         {
-
             int StartPoint = 0;
             int EndPoint = 0;
             int valInteger = 0;
@@ -139,7 +158,6 @@ namespace SpilnaSpravaTask2
 
                     //CountWords(sentense);
                     CountEmails(sentense);
-
 
                     StartPoint = valInteger;
                 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SpilnaSpravaTask2
@@ -33,21 +34,91 @@ namespace SpilnaSpravaTask2
 
 
 
+            int countemail = CountEmails(lines);
+            int countnumbers = CountNumbers(lines);
+
+
             Console.ReadKey();
         }
 
+        public static int CountWords(string sentense)
+        {
+            int words = 0;
+
+            for(int i = 0; i < sentense.Length; i++)
+            {
+
+            }
+
+            var text = sentense;
+
+            int wordCount = 0, index = 0;
+
+            while (index < text.Length)
+            {
+                // check if current char is part of a word
+                while (index < text.Length && !char.IsWhiteSpace(text[index]))
+                    index++;
+
+                wordCount++;
+
+                // skip whitespace until next word
+                while (index < text.Length && char.IsWhiteSpace(text[index]))
+                    index++;
+
+            }
+
+            Console.WriteLine(wordCount);
+
+            //string[] textMass;
+
+            //textMass = sentense.Split(' ');
+            //Console.WriteLine("Количество слов:");
+            //Console.WriteLine(textMass.Length);
+
+
+
+            return words;
+        }
+
+        public static int CountEmails(string sentense)
+        {
+            int EmailCount = 0;
+
+            const string MatchEmailPattern =
+    @"(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
+    + @"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\."
+      + @"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+    + @"([a-zA-Z]+[\w-]+\.)+[a-zA-Z]{2,4})";
+
+            Regex rx = new Regex(MatchEmailPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+            MatchCollection matches = rx.Matches(sentense);
+
+            EmailCount = matches.Count;
+
+            return EmailCount;
+        }
+
+        public static int CountNumbers(string sentense)
+        {
+            int NumbersCount = 0;
+
+            return NumbersCount;
+        }
         public static void IdentitySentense(string lines)
         {
+
             int StartPoint = 0;
             int EndPoint = 0;
-            int val = 0;
+            int valInteger = 0;
 
             foreach (var b in lines)
             {
-                val++;
+                valInteger++;
                 if (b == '!' || b == '.' || b == ',' || b == '?')
                 {
-                    EndPoint = val;
+                    EndPoint = valInteger;
 
                     string sentense = "";
 
@@ -64,9 +135,13 @@ namespace SpilnaSpravaTask2
 
                     }
 
-                    Console.WriteLine(language);
+                    //Console.WriteLine(language);
 
-                    StartPoint = val;
+                    //CountWords(sentense);
+                    CountEmails(sentense);
+
+
+                    StartPoint = valInteger;
                 }
             }
         }

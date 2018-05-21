@@ -29,12 +29,12 @@ namespace SpilnaSpravaTask2
 
             string lines = System.IO.File.ReadAllText(@"C:\Users\Andrew Romanuk\source\Projects\SpilnaSpravaTask2\SpilnaSpravaTask2\Files\OnlyRussian.txt");
 
+            int countnumbers = CountNumbers(lines);
+
+            var emailTuple = CountEmails(lines); //Tuple with output email and sentense
+
+       
             IdentitySentense(lines);
-
-            //int countemail = CountEmails(lines);
-            ////////int countnumbers = CountNumbers(lines);
-
-            //Console.WriteLine(countemail);
 
             Console.ReadKey();
         }
@@ -57,7 +57,7 @@ namespace SpilnaSpravaTask2
             return words;
         }
 
-        public static int CountEmails(string sentense)
+        public static  Tuple<int,string> CountEmails(string sentense)
         {
             int EmailCount = 0;
 
@@ -75,8 +75,6 @@ namespace SpilnaSpravaTask2
 
             foreach (Match match in matches)
             {
-               // Console.WriteLine(match.Value.ToString());
-
                 String value = sentense;
 
                 string val = match.Value;
@@ -98,7 +96,6 @@ namespace SpilnaSpravaTask2
                 for (var i = StartIndex; i < EndIndex; i++)
                 {
                     array = array.Where(w => w != array[StartIndex]).ToArray();
-
                 }
 
                 string resultValue = "";
@@ -111,12 +108,23 @@ namespace SpilnaSpravaTask2
 
                 sentense = resultValue;
 
-                Console.WriteLine(sentense);
-
             }
 
-            return EmailCount;
+            return Tuple.Create<int, string>(EmailCount,sentense);
         }
+
+
+        static Tuple<int, float, string, char> Corteg(int a, string name)
+        {
+            int sqr = a * a;
+            float sqrt = (float)(Math.Sqrt(a));
+            string s = "Привет, " + name;
+            char ch = (char)(name[0]);
+
+            return Tuple.Create<int, float, string, char>(sqr, sqrt, s, ch);
+        }
+
+
 
         public static int CountNumbers(string sentense)
         {

@@ -11,10 +11,10 @@ namespace SpilnaSpravaTask2
 {
     class Program
     {
-        //Указываем путь папки с файлами
+        //Path to folder with files
         public static string setting = @"C:\Users\Andrew Romanuk\source\Projects\SpilnaSpravaTask2\SpilnaSpravaTask2\Files\";
 
-        //Указываем путь для Core14.profile.xml
+        //Path to Core14.profile.xml
         public static string identifierFactory = @"C:\Users\Andrew Romanuk\source\Projects\SpilnaSpravaTask2\SpilnaSpravaTask2\LanguageModels\Core14.profile.xml";
 
         static void Main(string[] args)
@@ -30,16 +30,52 @@ namespace SpilnaSpravaTask2
             string lines = System.IO.File.ReadAllText(@"C:\Users\Andrew Romanuk\source\Projects\SpilnaSpravaTask2\SpilnaSpravaTask2\Files\OnlyRussian.txt");
 
             var emailTuple = CountEmails(lines); //Tuple with output email and sentense
+
             var countTuple = CountNumbers(emailTuple.Item2);
 
+            IdentitySentense(countTuple.Item2);
 
-            IdentitySentense(lines);
+            //Console.WriteLine("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+
+            //Console.WriteLine("Count emails: " + emailTuple.Item1);
+
+            //Console.WriteLine("Count numbers:" + countTuple.Item1);
+
+            //Console.WriteLine("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+
 
             Console.ReadKey();
         }
 
-        public static int CountWords(string sentense)
+        public static int CountWords(string sentense, string language)
         {
+
+            if (language == "jpn" || language == "kor" || language == "zho")
+            {
+                return 1;
+            }
+
+            int WordCount = 0;
+
+            const string MatchWordPattern = @"\w+";
+
+            Regex rx = new Regex(MatchWordPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+            MatchCollection matches = rx.Matches(sentense);
+
+            WordCount = matches.Count;
+
+
+            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+
+            Console.WriteLine("The language: " + language);
+
+            Console.WriteLine("Count words:" + WordCount);
+
+
+            //Console.WriteLine("The total word count is {0}", counter);
+
+
             return 1;
         }
 
@@ -155,11 +191,14 @@ namespace SpilnaSpravaTask2
             int StartPoint = 0;
             int EndPoint = 0;
             int valInteger = 0;
+            var checkVal = 0;
+
+            lines += Environment.NewLine;
 
             foreach (var b in lines)
             {
                 valInteger++;
-                if (b == '!' || b == '.' || b == ',' || b == '?')
+                if (b == '!' || b == '.' || b == ',' || b == '?' || b == '(' || b == ')' || lines[checkVal] == '\r')
                 {
                     EndPoint = valInteger;
 
@@ -178,10 +217,12 @@ namespace SpilnaSpravaTask2
                         Console.WriteLine("System error: The language couldn’t be identified with an acceptable degree of certainty");
                     }
 
-                    //Console.WriteLine(language);
+                    CountWords(sentense, language);
 
                     StartPoint = valInteger;
+
                 }
+                checkVal++;
             }
         }
    

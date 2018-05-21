@@ -29,11 +29,10 @@ namespace SpilnaSpravaTask2
 
             string lines = System.IO.File.ReadAllText(@"C:\Users\Andrew Romanuk\source\Projects\SpilnaSpravaTask2\SpilnaSpravaTask2\Files\OnlyRussian.txt");
 
-            int countnumbers = CountNumbers(lines);
-
             var emailTuple = CountEmails(lines); //Tuple with output email and sentense
+            var countTuple = CountNumbers(emailTuple.Item2);
 
-       
+
             IdentitySentense(lines);
 
             Console.ReadKey();
@@ -41,23 +40,10 @@ namespace SpilnaSpravaTask2
 
         public static int CountWords(string sentense)
         {
-            int words = 0;
-
-            for (int i = 0; i < sentense.Length; i++)
-            {
-
-            }
-
-            //string[] textMass;
-
-            //textMass = sentense.Split(' ');
-            //Console.WriteLine("Количество слов:");
-            //Console.WriteLine(textMass.Length);
-
-            return words;
+            return 1;
         }
 
-        public static  Tuple<int,string> CountEmails(string sentense)
+        public static Tuple<int,string> CountEmails(string sentense)
         {
             int EmailCount = 0;
 
@@ -113,26 +99,56 @@ namespace SpilnaSpravaTask2
             return Tuple.Create<int, string>(EmailCount,sentense);
         }
 
-
-        static Tuple<int, float, string, char> Corteg(int a, string name)
+        public static Tuple<int, string> CountNumbers(string sentense)
         {
-            int sqr = a * a;
-            float sqrt = (float)(Math.Sqrt(a));
-            string s = "Привет, " + name;
-            char ch = (char)(name[0]);
+            int NumberCount = 0;
 
-            return Tuple.Create<int, float, string, char>(sqr, sqrt, s, ch);
-        }
+            const string MatchNumberPattern = @"(?<!\S)(\d*\.?\d+|\d{1,3}(,\d{3})*(\.\d+)?)(?!\S)";
 
+            Regex rx = new Regex(MatchNumberPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+            MatchCollection matches = rx.Matches(sentense);
 
-        public static int CountNumbers(string sentense)
-        {
-            int NumbersCount = 0;
+            NumberCount = matches.Count;
 
-            
+            foreach (Match match in matches)
+            {
+                String value = sentense;
 
-            return NumbersCount;
+                string val = match.Value;
+
+                int valLength = val.Length;
+
+                int StartIndex = value.IndexOf(val);
+                int EndIndex = StartIndex + valLength;
+
+                object[] array = new object[value.Length];
+
+                //Convert string to object[]
+                for (var i = 0; i < array.Length; i++)
+                {
+                    array[i] = value[i];
+                }
+
+                //Truncate needed element
+                for (var i = StartIndex; i < EndIndex; i++)
+                {
+                    array = array.Where(w => w != array[StartIndex]).ToArray();
+                }
+
+                string resultValue = "";
+
+                //Convert object[] to string
+                for (var i = 0; i < array.Length; i++)
+                {
+                    resultValue += array[i];
+                }
+
+                sentense = resultValue;
+
+            }
+
+            return Tuple.Create<int, string>(NumberCount, sentense);
         }
         public static void IdentitySentense(string lines)
         {
@@ -159,13 +175,10 @@ namespace SpilnaSpravaTask2
 
                     if (language == "System error: The language couldn’t be identified with an acceptable degree of certainty")
                     {
-
+                        Console.WriteLine("System error: The language couldn’t be identified with an acceptable degree of certainty");
                     }
 
                     //Console.WriteLine(language);
-
-                    //CountWords(sentense);
-                    CountEmails(sentense);
 
                     StartPoint = valInteger;
                 }

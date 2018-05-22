@@ -23,31 +23,36 @@ namespace SpilnaSpravaTask2
 
             foreach (string s in files)
             {
+                Dictionary<string, int> dictionary = new Dictionary<string, int>();
 
-                //   Console.WriteLine(lines);
+                string lines = System.IO.File.ReadAllText(s);
+
+                var emailTuple = CountEmails(lines); //Tuple with output email and sentense
+
+                var countNumberTuple = CountNumbers(emailTuple.Item2);
+
+                IdentitySentense(countNumberTuple.Item2, dictionary);
+
+                //Console.WriteLine("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+
+                //Console.WriteLine("Count emails: " + emailTuple.Item1);
+
+                //Console.WriteLine("Count numbers:" + countNumberTuple.Item1);
+
+                //Console.WriteLine("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+
+                foreach(var b in dictionary)
+                {
+                    Console.WriteLine("Language: " + b.Key + " Value: " + b.Value);
+                }
+
             }
-
-            string lines = System.IO.File.ReadAllText(@"C:\Users\Andrew Romanuk\source\Projects\SpilnaSpravaTask2\SpilnaSpravaTask2\Files\OnlyRussian.txt");
-
-            var emailTuple = CountEmails(lines); //Tuple with output email and sentense
-
-            var countTuple = CountNumbers(emailTuple.Item2);
-
-            IdentitySentense(countTuple.Item2);
-
-            //Console.WriteLine("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
-
-            //Console.WriteLine("Count emails: " + emailTuple.Item1);
-
-            //Console.WriteLine("Count numbers:" + countTuple.Item1);
-
-            //Console.WriteLine("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
 
 
             Console.ReadKey();
         }
 
-        public static int CountWords(string sentense, string language)
+        public static int CountWords(string sentense, string language, Dictionary<string,int> dictionary)
         {
 
             if (language == "jpn" || language == "kor" || language == "zho")
@@ -57,7 +62,7 @@ namespace SpilnaSpravaTask2
 
             int WordCount = 0;
 
-            const string MatchWordPattern = @"\w+";
+            const string MatchWordPattern = @"([^\s]+)";
 
             Regex rx = new Regex(MatchWordPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
@@ -65,13 +70,35 @@ namespace SpilnaSpravaTask2
 
             WordCount = matches.Count;
 
+            //Check if dictionary contains language that exists 
 
-            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+            bool IsLanguageExist = false;
 
-            Console.WriteLine("The language: " + language);
+            foreach(var b in dictionary)
+            {
+                if(b.Key == language)
+                {
+                    int OldVal = b.Value;
+                    dictionary[b.Key] = OldVal + matches.Count;
+                    IsLanguageExist = true;
+                    break;
+                }
+            }
 
-            Console.WriteLine("Count words:" + WordCount);
+            //add count item to dictionary 
+            if(IsLanguageExist == false)
+            {
+                dictionary.Add(language, matches.Count);
 
+            }
+
+
+
+            //Console.WriteLine("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+
+            //Console.WriteLine("The language: " + language);
+
+            //Console.WriteLine("Count words:" + WordCount);
 
             //Console.WriteLine("The total word count is {0}", counter);
 
@@ -186,7 +213,7 @@ namespace SpilnaSpravaTask2
 
             return Tuple.Create<int, string>(NumberCount, sentense);
         }
-        public static void IdentitySentense(string lines)
+        public static void IdentitySentense(string lines, Dictionary<string,int> dictionary )
         {
             int StartPoint = 0;
             int EndPoint = 0;
@@ -198,7 +225,7 @@ namespace SpilnaSpravaTask2
             foreach (var b in lines)
             {
                 valInteger++;
-                if (b == '!' || b == '.' || b == ',' || b == '?' || b == '(' || b == ')' || lines[checkVal] == '\r')
+                if ((b == '!' && lines[checkVal] == ' ')  || ( b == '.' && lines[checkVal] == ' ') || (b == ',' && lines[checkVal] == ' ') || ( b == '?' && lines[checkVal] == ' ') || ( b == '(' && lines[checkVal] == ' ' ) || ( b == ')' && lines[checkVal] == ' ' ) || lines[checkVal] == '\r')
                 {
                     EndPoint = valInteger;
 
@@ -217,7 +244,7 @@ namespace SpilnaSpravaTask2
                         Console.WriteLine("System error: The language couldn’t be identified with an acceptable degree of certainty");
                     }
 
-                    CountWords(sentense, language);
+                    CountWords(sentense, language, dictionary);
 
                     StartPoint = valInteger;
 

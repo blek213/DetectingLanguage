@@ -14,50 +14,73 @@ namespace SpilnaSpravaTask2
         //Path to folder with files
         public static string setting = @"C:\Users\Andrew Romanuk\source\Projects\SpilnaSpravaTask2\SpilnaSpravaTask2\Files\";
 
+        //Path to logFile
+        public static string logFile = @"C:\Users\Andrew Romanuk\source\Projects\SpilnaSpravaTask2\SpilnaSpravaTask2\LogFile.txt";
+
         //Path to Core14.profile.xml
         public static string identifierFactory = @"C:\Users\Andrew Romanuk\source\Projects\SpilnaSpravaTask2\SpilnaSpravaTask2\LanguageModels\Core14.profile.xml";
 
+
         static void Main(string[] args)
         {
+
             string[] files = Directory.GetFiles(setting);
+
 
             foreach (string s in files)
             {
+              
                 Dictionary<string, int> dictionary = new Dictionary<string, int>();
 
                 string lines = System.IO.File.ReadAllText(s);
 
-                var emailTuple = CountEmails(lines); //Tuple with output email and sentense
+                var text= DeleteAllDashes(lines);
+
+                var emailTuple = CountEmails(text); //Tuple with output email and sentense
 
                 var countNumberTuple = CountNumbers(emailTuple.Item2);
 
                 IdentitySentense(countNumberTuple.Item2, dictionary);
 
-                //Console.WriteLine("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+                DeleteDanZero(dictionary);
 
-                //Console.WriteLine("Count emails: " + emailTuple.Item1);
-
-                //Console.WriteLine("Count numbers:" + countNumberTuple.Item1);
-
-                //Console.WriteLine("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
-
-                foreach(var b in dictionary)
+                using (StreamWriter sw = new StreamWriter(logFile, true, System.Text.Encoding.Default))
                 {
-                    Console.WriteLine("Language: " + b.Key + " Value: " + b.Value);
-                }
+                    sw.WriteLine("");
 
+                    sw.WriteLine("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+
+                    sw.WriteLine("");
+
+                    sw.WriteLine("For: " + s);
+
+                    foreach (var b in dictionary)
+                    {
+                        sw.WriteLine(b.Key + ":" + b.Value);
+                    }
+
+                    sw.WriteLine("~");
+
+                    sw.WriteLine("Count emails: " + emailTuple.Item1);
+
+                    sw.WriteLine("Count numbers:" + countNumberTuple.Item1);
+
+                    sw.WriteLine("~");
+
+                    sw.WriteLine("");
+
+                    sw.WriteLine("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+
+                }
             }
 
-
-            Console.ReadKey();
         }
 
-        public static int CountWords(string sentense, string language, Dictionary<string,int> dictionary)
+        public static void CountWords(string sentense, string language, Dictionary<string,int> dictionary)
         {
 
             if (language == "jpn" || language == "kor" || language == "zho")
             {
-                return 1;
             }
 
             int WordCount = 0;
@@ -92,18 +115,6 @@ namespace SpilnaSpravaTask2
 
             }
 
-
-
-            //Console.WriteLine("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
-
-            //Console.WriteLine("The language: " + language);
-
-            //Console.WriteLine("Count words:" + WordCount);
-
-            //Console.WriteLine("The total word count is {0}", counter);
-
-
-            return 1;
         }
 
         public static Tuple<int,string> CountEmails(string sentense)
@@ -130,8 +141,8 @@ namespace SpilnaSpravaTask2
 
                 int valLength = val.Length;
 
-                int StartIndex = value.IndexOf(val); //10
-                int EndIndex = StartIndex + valLength; //15
+                int StartIndex = value.IndexOf(val); 
+                int EndIndex = StartIndex + valLength;
 
                 object[] array = new object[value.Length];
 
@@ -270,5 +281,70 @@ namespace SpilnaSpravaTask2
            
             return "System error: The language couldn’t be identified with an acceptable degree of certainty";
         }
+
+
+        //This is function for deleting one unnecessary language that creates through the bug. Костыль. 
+        public static void DeleteDanZero(Dictionary<string, int> dictionary)
+        {
+            foreach (var b in dictionary)
+            {
+                if (b.Key == "dan" && b.Value == 0)
+                {
+                    dictionary.Remove(b.Key);
+                    break;
+                }
+            }
+        }
+
+        public static string DeleteAllDashes(string text)
+        {
+            object[] array = new object[text.Length];
+
+            //Convert string to object[]
+            for (var i = 0; i < array.Length; i++)
+            {
+                array[i] = text[i];
+            }
+
+            foreach (var b in text)
+            {
+                if(b == '-')
+                {
+                    int StartIndex = text.IndexOf('-');
+                    int EndIndex = StartIndex + 1;
+
+                    //Truncate needed element
+                    for (var i = StartIndex; i < EndIndex; i++)
+                    {
+                        array = array.Where(w => w != array[StartIndex]).ToArray();
+                    }
+
+                }
+                if(b == '—')
+                {
+                    int StartIndex = text.IndexOf('—');
+                    int EndIndex = StartIndex + 1;
+
+                    //Truncate needed element
+                    for (var i = StartIndex; i < EndIndex; i++)
+                    {
+                        array = array.Where(w => w != array[StartIndex]).ToArray();
+                    }
+                }
+            }
+
+            string resultValue = "";
+
+            //Convert object[] to string
+            for (var i = 0; i < array.Length; i++)
+            {
+                resultValue += array[i];
+            }
+
+            return resultValue;
+
+        }
+
+
     }
 }

@@ -59,10 +59,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Files\OnlyRussian.txt" />
+    <Content Include="Files\English.txt" />
+    <Content Include="Files\Russian.txt" />
     <Content Include="LanguageModels\Core14.profile.xml" />
     <Content Include="LogFile.txt" />
-    <Content Include="TempFiles\TempLanguagesLog.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

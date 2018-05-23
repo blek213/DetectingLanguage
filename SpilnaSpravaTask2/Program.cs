@@ -20,16 +20,12 @@ namespace SpilnaSpravaTask2
         //Path to Core14.profile.xml
         public static string identifierFactory = @"C:\Users\Andrew Romanuk\source\Projects\SpilnaSpravaTask2\SpilnaSpravaTask2\LanguageModels\Core14.profile.xml";
 
-
         static void Main(string[] args)
         {
-
             string[] files = Directory.GetFiles(setting);
 
-
             foreach (string s in files)
-            {
-              
+            {           
                 Dictionary<string, int> dictionary = new Dictionary<string, int>();
 
                 string lines = System.IO.File.ReadAllText(s);
@@ -75,12 +71,37 @@ namespace SpilnaSpravaTask2
             }
         }
 
-        public static void CountWords(string sentense, string language, Dictionary<string,int> dictionary)
+        public static void CountWords(string sentense, string language, Dictionary<string, int> dictionary)
         {
-
-            if (language == "jpn" || language == "kor" || language == "zho")
+            if (language == "jpn" || language == "zho")
             {
+                bool IsLanguageExist = false;
 
+                string SentenseTrimed = sentense.Trim();
+
+                foreach (var b in dictionary)
+                {
+                    if (b.Key == language)
+                    {
+                        int OldVal = b.Value;
+
+                        dictionary[b.Key] = OldVal + SentenseTrimed.Length;
+
+                        IsLanguageExist = true;
+
+                        break;
+                    }
+                }
+
+                //add count item to dictionary 
+                if (IsLanguageExist == false)
+                {
+                    dictionary.Add(language, SentenseTrimed.Length);
+
+                }
+            }
+            else if (language == "kor")
+            {
                 bool IsLanguageExist = false;
 
                 foreach (var b in dictionary)
@@ -88,8 +109,11 @@ namespace SpilnaSpravaTask2
                     if (b.Key == language)
                     {
                         int OldVal = b.Value;
+
                         dictionary[b.Key] = OldVal + sentense.Length;
+
                         IsLanguageExist = true;
+
                         break;
                     }
                 }
@@ -100,7 +124,6 @@ namespace SpilnaSpravaTask2
                     dictionary.Add(language, sentense.Length);
 
                 }
-
             }
             else
             {
@@ -123,8 +146,11 @@ namespace SpilnaSpravaTask2
                     if (b.Key == language)
                     {
                         int OldVal = b.Value;
+
                         dictionary[b.Key] = OldVal + matches.Count;
+
                         IsLanguageExist = true;
+
                         break;
                     }
                 }
@@ -164,6 +190,7 @@ namespace SpilnaSpravaTask2
                 int valLength = val.Length;
 
                 int StartIndex = value.IndexOf(val); 
+
                 int EndIndex = StartIndex + valLength;
 
                 object[] array = new object[value.Length];
@@ -216,6 +243,7 @@ namespace SpilnaSpravaTask2
                 int valLength = val.Length;
 
                 int StartIndex = value.IndexOf(val);
+
                 int EndIndex = StartIndex + valLength;
 
                 object[] array = new object[value.Length];
@@ -249,62 +277,76 @@ namespace SpilnaSpravaTask2
         public static void IdentitySentense(string lines, Dictionary<string,int> dictionary )
         {
             int StartPoint = 0;
+
             int EndPoint = 0;
+
             int valInteger = 0;
+
             var checkVal = 0;
 
             lines += Environment.NewLine;
 
+            lines += " ";
+         
             foreach (var b in lines)
             {
                 valInteger++;
 
-               
-                if ((b == '!' && lines[checkVal] == ' ')  || ( b == '.' && lines[checkVal] == ' ') || (b == ',' && lines[checkVal] == ' ') 
-                   || ( b == '?' && lines[checkVal] == ' ') || ( b == '(' && lines[checkVal] == ' ' ) || (b == ';' && lines[checkVal] == ' ')
-                   || (b == ')' && lines[checkVal] == ' ') || (b == '"' && lines[checkVal] == ' ') || (b == '"' && lines[checkVal] == ' ')
-                   || (b == '«' && lines[checkVal] == ' ') || (b == '»' && lines[checkVal] == ' ') || (b == '„' && lines[checkVal] == ' ')
-                   || (b == '“' && lines[checkVal] == ' ') || (b == '{' && lines[checkVal] == ' ')  || (b == '}' && lines[checkVal] == ' ')
-                   || (b == ':' && lines[checkVal] == ' ') || (b == '[' && lines[checkVal] == ' ') || (b == ']' && lines[checkVal] == ' ')
-                   || (b == '【' ) || (b == '】' ) || (b == '、' ) || (b == '」')
-                   || (b == '。') || (b == '〽' ) || (b == '・' )
-                   || lines[checkVal] == '\r')
+                try
                 {
-                    EndPoint = valInteger;
-
-                    string sentense = "";
-
-                    for (int i = StartPoint; i < EndPoint; i++)
+                    if ((b.ToString() == "!" && lines[valInteger].ToString() == " ") || (b.ToString() == "." && lines[valInteger].ToString() == " ") || (b.ToString() == "," && lines[valInteger].ToString() == " ")
+                   || (b.ToString() == "?" && lines[valInteger].ToString() == " ") || (b.ToString() == "(" && lines[valInteger].ToString() == " ") || (b.ToString() == ";" && lines[valInteger].ToString() == " ")
+                   || (b.ToString() == ")" && lines[valInteger].ToString() == " ") || (b.ToString() == "' " && lines[valInteger].ToString() == " ")
+                   || (b.ToString() == "«" && lines[valInteger].ToString() == " ") || (b.ToString() == "»" && lines[valInteger].ToString() == " ") || (b.ToString() == "„" && lines[valInteger].ToString() == " ")
+                   || (b.ToString() == "“" && lines[valInteger].ToString() == " ") || (b.ToString() == "{" && lines[valInteger].ToString() == " ") || (b.ToString() == "}" && lines[valInteger].ToString() == " ")
+                   || (b.ToString() == ":" && lines[valInteger].ToString() == " ") || (b.ToString() == "[" && lines[valInteger].ToString() == " ") || (b.ToString() == "]" && lines[valInteger].ToString() == " ")
+                   || (b.ToString() == "【") || (b.ToString() == "】") || (b.ToString() == "、") || (b.ToString() == "」")
+                   || (b.ToString() == "。") || (b.ToString() == "〽") || (b.ToString() == "・")
+                   || lines[valInteger].ToString() == "\r")
                     {
-                        sentense += lines[i];
+                        EndPoint = valInteger;
+
+                        string sentense = "";
+
+                        for (int i = StartPoint; i < EndPoint; i++)
+                        {
+                            sentense += lines[i];
+
+                        }
+
+                        string language = IdentityLanguage(sentense);
+
+                        if (language == "System error: The language couldn’t be identified with an acceptable degree of certainty")
+                        {
+                            Console.WriteLine("System error: The language couldn’t be identified with an acceptable degree of certainty");
+                        }
+
+                        CountWords(sentense, language, dictionary);
+
+                        StartPoint = valInteger;
 
                     }
 
-                    string language = IdentityLanguage(sentense);
-
-                    if (language == "System error: The language couldn’t be identified with an acceptable degree of certainty")
-                    {
-                        Console.WriteLine("System error: The language couldn’t be identified with an acceptable degree of certainty");
-                    }
-
-                    CountWords(sentense, language, dictionary);
-
-                    StartPoint = valInteger;
-
+                    checkVal++;
                 }
-
-                checkVal++;
+                catch (Exception)
+                {
+                    break;
+                }
+                
             }
         }
    
         public static string IdentityLanguage(string sentence)
         {
             var factory = new RankedLanguageIdentifierFactory();
+
             var identifier = factory.Load(@"C:\Users\Andrew Romanuk\source\Projects\SpilnaSpravaTask2\SpilnaSpravaTask2\LanguageModels\Core14.profile.xml");
 
             var languages = identifier.Identify(sentence);
 
             var mostCertainLanguage = languages.FirstOrDefault();
+
             if (mostCertainLanguage != null)
             {
                 string resultLanguage = mostCertainLanguage.Item1.Iso639_3;
@@ -324,6 +366,7 @@ namespace SpilnaSpravaTask2
                 if (b.Key == "dan" && b.Value == 0)
                 {
                     dictionary.Remove(b.Key);
+
                     break;
                 }
             }
@@ -344,6 +387,7 @@ namespace SpilnaSpravaTask2
                 if(b == '-')
                 {
                     int StartIndex = text.IndexOf('-');
+
                     int EndIndex = StartIndex + 1;
 
                     //Truncate needed element
@@ -368,6 +412,7 @@ namespace SpilnaSpravaTask2
                 if(b == '〜')
                 {
                     int StartIndex = text.IndexOf('〜');
+
                     int EndIndex = StartIndex + 1;
 
                     //Truncate needed element
@@ -389,7 +434,6 @@ namespace SpilnaSpravaTask2
             return resultValue;
 
         }
-
 
     }
 }

@@ -62,10 +62,14 @@
     <Content Include="Files\Chinese.txt" />
     <Content Include="Files\English.txt" />
     <Content Include="Files\Japan.txt" />
+    <Content Include="Files\Korean.txt" />
+    <Content Include="Files\MultyLanguages.txt" />
     <Content Include="Files\Russian.txt" />
     <Content Include="LanguageModels\Core14.profile.xml" />
     <Content Include="LogFile.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="HideFiles\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

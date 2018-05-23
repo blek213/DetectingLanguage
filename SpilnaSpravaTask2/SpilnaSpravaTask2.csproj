@@ -59,7 +59,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Files\Chinese.txt" />
     <Content Include="Files\English.txt" />
+    <Content Include="Files\Japan.txt" />
     <Content Include="Files\Russian.txt" />
     <Content Include="LanguageModels\Core14.profile.xml" />
     <Content Include="LogFile.txt" />

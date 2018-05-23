@@ -73,7 +73,6 @@ namespace SpilnaSpravaTask2
 
                 }
             }
-
         }
 
         public static void CountWords(string sentense, string language, Dictionary<string,int> dictionary)
@@ -81,38 +80,61 @@ namespace SpilnaSpravaTask2
 
             if (language == "jpn" || language == "kor" || language == "zho")
             {
-            }
 
-            int WordCount = 0;
+                bool IsLanguageExist = false;
 
-            const string MatchWordPattern = @"([^\s]+)";
-
-            Regex rx = new Regex(MatchWordPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-            MatchCollection matches = rx.Matches(sentense);
-
-            WordCount = matches.Count;
-
-            //Check if dictionary contains language that exists 
-
-            bool IsLanguageExist = false;
-
-            foreach(var b in dictionary)
-            {
-                if(b.Key == language)
+                foreach (var b in dictionary)
                 {
-                    int OldVal = b.Value;
-                    dictionary[b.Key] = OldVal + matches.Count;
-                    IsLanguageExist = true;
-                    break;
+                    if (b.Key == language)
+                    {
+                        int OldVal = b.Value;
+                        dictionary[b.Key] = OldVal + sentense.Length;
+                        IsLanguageExist = true;
+                        break;
+                    }
                 }
+
+                //add count item to dictionary 
+                if (IsLanguageExist == false)
+                {
+                    dictionary.Add(language, sentense.Length);
+
+                }
+
             }
-
-            //add count item to dictionary 
-            if(IsLanguageExist == false)
+            else
             {
-                dictionary.Add(language, matches.Count);
+                int WordCount = 0;
 
+                const string MatchWordPattern = @"([^\s]+)";
+
+                Regex rx = new Regex(MatchWordPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+                MatchCollection matches = rx.Matches(sentense);
+
+                WordCount = matches.Count;
+
+                //Check if dictionary contains language that exists 
+
+                bool IsLanguageExist = false;
+
+                foreach (var b in dictionary)
+                {
+                    if (b.Key == language)
+                    {
+                        int OldVal = b.Value;
+                        dictionary[b.Key] = OldVal + matches.Count;
+                        IsLanguageExist = true;
+                        break;
+                    }
+                }
+
+                //add count item to dictionary 
+                if (IsLanguageExist == false)
+                {
+                    dictionary.Add(language, matches.Count);
+
+                }
             }
 
         }
@@ -236,7 +258,17 @@ namespace SpilnaSpravaTask2
             foreach (var b in lines)
             {
                 valInteger++;
-                if ((b == '!' && lines[checkVal] == ' ')  || ( b == '.' && lines[checkVal] == ' ') || (b == ',' && lines[checkVal] == ' ') || ( b == '?' && lines[checkVal] == ' ') || ( b == '(' && lines[checkVal] == ' ' ) || ( b == ')' && lines[checkVal] == ' ' ) || lines[checkVal] == '\r')
+
+               
+                if ((b == '!' && lines[checkVal] == ' ')  || ( b == '.' && lines[checkVal] == ' ') || (b == ',' && lines[checkVal] == ' ') 
+                   || ( b == '?' && lines[checkVal] == ' ') || ( b == '(' && lines[checkVal] == ' ' ) || (b == ';' && lines[checkVal] == ' ')
+                   || (b == ')' && lines[checkVal] == ' ') || (b == '"' && lines[checkVal] == ' ') || (b == '"' && lines[checkVal] == ' ')
+                   || (b == '«' && lines[checkVal] == ' ') || (b == '»' && lines[checkVal] == ' ') || (b == '„' && lines[checkVal] == ' ')
+                   || (b == '“' && lines[checkVal] == ' ') || (b == '{' && lines[checkVal] == ' ')  || (b == '}' && lines[checkVal] == ' ')
+                   || (b == ':' && lines[checkVal] == ' ') || (b == '[' && lines[checkVal] == ' ') || (b == ']' && lines[checkVal] == ' ')
+                   || (b == '【' ) || (b == '】' ) || (b == '、' ) || (b == '」')
+                   || (b == '。') || (b == '〽' ) || (b == '・' )
+                   || lines[checkVal] == '\r')
                 {
                     EndPoint = valInteger;
 
@@ -260,6 +292,7 @@ namespace SpilnaSpravaTask2
                     StartPoint = valInteger;
 
                 }
+
                 checkVal++;
             }
         }
@@ -323,6 +356,18 @@ namespace SpilnaSpravaTask2
                 if(b == '—')
                 {
                     int StartIndex = text.IndexOf('—');
+                    int EndIndex = StartIndex + 1;
+
+                    //Truncate needed element
+                    for (var i = StartIndex; i < EndIndex; i++)
+                    {
+                        array = array.Where(w => w != array[StartIndex]).ToArray();
+                    }
+                }
+
+                if(b == '〜')
+                {
+                    int StartIndex = text.IndexOf('〜');
                     int EndIndex = StartIndex + 1;
 
                     //Truncate needed element
